@@ -1,0 +1,937 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Ask If Unclear</title>
+<meta name="description" content="A ten-minute talk on why next-token prediction makes an AI guess at ambiguous prompts — and why you should end important requests with &quot;ask if unclear&quot;.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ask If Unclear">
+<meta property="og:description" content="Your AI isn't reading your mind. It's placing a bet. An eleven-slide case for three small words.">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5ZTERDQNWV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-5ZTERDQNWV');
+</script>
+
+<style>
+  /* ---------- tokens: light is the base palette ---------- */
+  :root {
+    --ground:      #ECEFF2;
+    --surface:     #F7F9FA;
+    --well:        #DFE4E9;
+    --line:        #C6CED6;
+    --ink:         #14181F;
+    --ink-soft:    #4E5A68;
+    --ink-faint:   #7C8794;
+    --amber:       #B8790A;
+    --amber-soft:  #E7C97F;
+    --teal:        #2E7A72;
+    --teal-soft:   #A8CDC7;
+    --shadow:      0 1px 2px rgba(20,24,31,.06), 0 8px 24px rgba(20,24,31,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:     #101419;
+      --surface:    #181E26;
+      --well:       #1F2732;
+      --line:       #303B48;
+      --ink:        #E6EAEF;
+      --ink-soft:   #A2AEBC;
+      --ink-faint:  #6F7C8B;
+      --amber:      #EDB44A;
+      --amber-soft: #6A4E17;
+      --teal:       #56B7A9;
+      --teal-soft:  #1E4742;
+      --shadow:     0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:     #101419;
+    --surface:    #181E26;
+    --well:       #1F2732;
+    --line:       #303B48;
+    --ink:        #E6EAEF;
+    --ink-soft:   #A2AEBC;
+    --ink-faint:  #6F7C8B;
+    --amber:      #EDB44A;
+    --amber-soft: #6A4E17;
+    --teal:       #56B7A9;
+    --teal-soft:  #1E4742;
+    --shadow:     0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+  }
+
+  :root {
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --rail: clamp(1.25rem, 5vw, 5rem);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--serif);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- deck shell ---------- */
+  .deck { position: relative; min-height: 100vh; }
+
+  .slide {
+    display: none;
+    min-height: 100vh;
+    padding: clamp(3.5rem, 7vh, 5.5rem) var(--rail) clamp(5rem, 9vh, 6.5rem);
+    align-content: center;
+  }
+  .slide.is-active { display: grid; }
+
+  .inner {
+    width: 100%;
+    max-width: 62rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.1rem, 2.4vh, 1.9rem);
+  }
+
+  /* ---------- type ---------- */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex;
+    align-items: center;
+    gap: .8em;
+  }
+  .eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: clamp(2.6rem, 8.5vw, 6rem);
+    line-height: .95;
+    letter-spacing: -.03em;
+    font-weight: 600;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h2 {
+    font-family: var(--mono);
+    font-size: clamp(1.5rem, 3.6vw, 2.5rem);
+    line-height: 1.08;
+    letter-spacing: -.02em;
+    font-weight: 600;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .lede {
+    font-size: clamp(1.1rem, 2.1vw, 1.5rem);
+    line-height: 1.45;
+    color: var(--ink-soft);
+    max-width: 40ch;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .say {
+    font-size: clamp(1rem, 1.7vw, 1.2rem);
+    line-height: 1.55;
+    max-width: 56ch;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .kicker {
+    font-family: var(--mono);
+    font-size: clamp(.95rem, 1.7vw, 1.15rem);
+    line-height: 1.45;
+    color: var(--amber);
+    max-width: 48ch;
+    margin: 0;
+  }
+  em { font-style: italic; }
+  strong { font-weight: 600; color: var(--ink); }
+
+  /* mono = the machine talking */
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  .prompt {
+    font-family: var(--mono);
+    font-size: clamp(.95rem, 1.9vw, 1.3rem);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--amber);
+    border-radius: 3px;
+    padding: .85em 1.1em;
+    box-shadow: var(--shadow);
+  }
+  .prompt .who {
+    display: block;
+    font-size: .62em;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: .5em;
+  }
+
+  /* ---------- odds board: candidate rows ---------- */
+  .board { display: flex; flex-direction: column; gap: .4rem; }
+  .oddscol { display: flex; flex-direction: column; gap: .35rem; }
+  .oddslabel {
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .1em;
+    color: var(--ink-faint);
+    text-align: right;
+  }
+  /* reserve the four rows so the slide doesn't jump when the first chunk lands */
+  #board { min-height: calc(4 * 1.55rem + 3 * .4rem); }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 11rem) 1fr 3.4rem;
+    align-items: center;
+    gap: clamp(.6rem, 2vw, 1.2rem);
+    font-family: var(--mono);
+    font-size: clamp(.8rem, 1.5vw, 1rem);
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+  }
+  .row .tok { text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .track { display: block; height: .7rem; background: var(--well); border-radius: 1px; overflow: hidden; }
+  .row .fill {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--ink-faint);
+    /* No transition: the bar's length IS the data. An animation that stalls
+       (throttled tab, paused compositor) would leave it reading 0%. */
+  }
+  .row .pct { text-align: right; font-size: .9em; }
+  .row.is-pick { color: var(--ink); }
+  .row.is-pick .tok { font-weight: 600; }
+  .row.is-pick .fill { background: var(--amber); }
+  .row.is-rival .fill { background: var(--teal); }
+  .row.is-rival .tok { color: var(--teal); }
+
+  /* ---------- generic panels ---------- */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: clamp(.9rem, 2vw, 1.35rem);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+  }
+  .grid2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .75rem;
+  }
+  @media (max-width: 40rem) {
+    .grid2 { grid-template-columns: minmax(0, 1fr); }
+  }
+  /* unscoped: panels appear outside .grid2 too, and a scoped .tag silently
+     fell back to serif body type when it did */
+  .tag {
+    font-family: var(--mono);
+    font-size: .66rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .body { font-size: clamp(.92rem, 1.5vw, 1.05rem); line-height: 1.45; margin: 0; }
+
+  ul.plain { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+  ul.plain li {
+    display: grid;
+    grid-template-columns: 1.1rem 1fr;
+    gap: .55rem;
+    font-size: clamp(.95rem, 1.5vw, 1.1rem);
+    line-height: 1.4;
+  }
+  ul.plain li::before {
+    content: "—";
+    font-family: var(--mono);
+    color: var(--ink-faint);
+  }
+  ul.plain.yes li::before { content: "+"; color: var(--amber); }
+  ul.plain.no  li::before { content: "\00b7"; color: var(--ink-faint); }
+
+  /* ---------- controls ---------- */
+  button {
+    font-family: var(--mono);
+    font-size: .8rem;
+    letter-spacing: .06em;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: .55em 1em;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  button:hover:not(:disabled) { border-color: var(--amber); color: var(--amber); }
+  button:disabled { opacity: .4; cursor: default; }
+  button:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
+  .controls { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+  .controls .hint {
+    font-family: var(--mono);
+    font-size: .72rem;
+    color: var(--ink-faint);
+    letter-spacing: .04em;
+  }
+
+  /* ---------- slide 4: growing sentence ---------- */
+  .stream {
+    font-family: var(--mono);
+    font-size: clamp(1rem, 2.4vw, 1.6rem);
+    line-height: 1.5;
+    min-height: 3.2em;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: .8em 1em;
+    box-shadow: var(--shadow);
+  }
+  .stream .placeholder { color: var(--ink-faint); }
+  .stream .new { background: var(--amber-soft); border-radius: 2px; }
+  .caret {
+    display: inline-block;
+    width: .55ch;
+    height: 1.05em;
+    background: var(--amber);
+    vertical-align: -.16em;
+    animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .flag {
+    font-family: var(--mono);
+    font-size: clamp(.78rem, 1.4vw, .95rem);
+    color: var(--teal);
+    border-left: 2px solid var(--teal);
+    padding-left: .8em;
+    min-height: 1.4em;
+  }
+  .flag:empty { border-left-color: transparent; }
+
+  .caption {
+    font-family: var(--mono);
+    font-size: .72rem;
+    line-height: 1.5;
+    letter-spacing: .02em;
+    color: var(--ink-faint);
+    margin: 0;
+    max-width: 62ch;
+  }
+
+  /* ---------- slide 5: token splitting ---------- */
+  .tokline { display: flex; flex-wrap: wrap; gap: .9rem 1.6rem; align-items: baseline; }
+  .word { display: flex; flex-direction: column; gap: .35rem; }
+  .word .chips { display: flex; gap: 2px; }
+  .word .chip {
+    font-family: var(--mono);
+    font-size: clamp(.95rem, 2vw, 1.35rem);
+    padding: .18em .45em;
+    background: var(--well);
+    border-radius: 2px;
+  }
+  .word .chip:nth-child(even) { background: var(--amber-soft); }
+  .word .label {
+    font-family: var(--mono);
+    font-size: .66rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- slide 8: toggle ---------- */
+  .switch { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
+  .switch .state {
+    font-family: var(--mono);
+    font-size: .8rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .switch .state.on { color: var(--amber); }
+  .out {
+    font-family: var(--mono);
+    font-size: clamp(.82rem, 1.5vw, 1rem);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--ink-faint);
+    border-radius: 3px;
+    padding: .9em 1.1em;
+    box-shadow: var(--shadow);
+    min-height: 9.5em;
+  }
+  .out.good { border-left-color: var(--teal); }
+  .cost {
+    font-family: var(--mono);
+    font-size: clamp(.85rem, 1.6vw, 1.05rem);
+    color: var(--ink-soft);
+  }
+  .cost b { color: var(--amber); font-weight: 600; }
+
+  /* ---------- slide 11: copy block ---------- */
+  .copyblock {
+    font-family: var(--mono);
+    font-size: clamp(1rem, 2.6vw, 1.75rem);
+    line-height: 1.35;
+    background: var(--surface);
+    border: 1px solid var(--amber);
+    border-radius: 4px;
+    padding: .8em 1em;
+    box-shadow: var(--shadow);
+    text-wrap: balance;
+  }
+
+  /* ---------- fork diagram ---------- */
+  .fork { width: 100%; height: auto; max-height: 34vh; }
+  .fork text {
+    font-family: var(--mono);
+    font-size: 13px;
+    fill: var(--ink-soft);
+  }
+  .fork text.pick { fill: var(--amber); }
+  .fork text.rival { fill: var(--teal); }
+
+  /* ---------- chrome: progress + counter + notes ---------- */
+  .chrome {
+    position: fixed;
+    left: var(--rail);
+    right: var(--rail);
+    bottom: clamp(1rem, 3vh, 1.75rem);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    pointer-events: none;
+  }
+  .ticks { display: flex; gap: 4px; pointer-events: auto; margin: -.75rem 0; }
+  .ticks button {
+    all: unset;
+    display: block;
+    width: 1.5rem;
+    height: 3px;
+    /* generous invisible hit area — a 3px target is unclickable mid-talk */
+    padding: .75rem 0;
+    /* background-color, never the `background` shorthand — the shorthand in the
+       hover/active rules below would reset background-clip and paint the padding */
+    background-color: var(--line);
+    background-clip: content-box;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: background .2s;
+  }
+  .ticks button:hover { background-color: var(--ink-faint); }
+  .ticks button[aria-current="true"] { background-color: var(--amber); }
+  .ticks button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+  .counter {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .12em;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    margin-left: auto;
+  }
+  .counter kbd {
+    font-family: var(--mono);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 0 .35em;
+    margin-right: .5em;
+  }
+
+  .notes {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--amber);
+    padding: 1rem var(--rail) 1.4rem;
+    font-family: var(--mono);
+    font-size: .85rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    box-shadow: 0 -8px 30px rgba(0,0,0,.12);
+    display: none;
+    z-index: 10;
+  }
+  .notes.is-open { display: block; }
+  .notes b {
+    color: var(--amber);
+    display: block;
+    font-size: .68rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    margin-bottom: .4rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- 1 -->
+  <section class="slide" data-note="Open cold. Ask the room: who has typed a request into an AI this week, got something confident back, and thought 'that is not what I meant'? Every hand. Ten minutes on why that happens, and the three words that fix most of it.">
+    <div class="inner">
+      <p class="eyebrow">A ten-minute case for three small words</p>
+      <h1>Ask If<br>Unclear</h1>
+      <p class="lede">Your AI isn't reading your mind.<br>It's placing a bet.</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide" data-note="Read the prompt out loud, then the four outputs. Every one of these is a defensible reading of 'clean up'. Land the punchline slowly — the failure was not comprehension.">
+    <div class="inner">
+      <p class="eyebrow">The thing that keeps happening</p>
+      <div class="prompt"><span class="who">You</span>Can you clean up the report?</div>
+      <div class="grid2">
+        <div class="panel"><span class="tag">Reading 1</span><p class="body mono">Fixed the typos. Changed nothing else.</p></div>
+        <div class="panel"><span class="tag">Reading 2</span><p class="body mono">Rewrote it at half the length.</p></div>
+        <div class="panel"><span class="tag">Reading 3</span><p class="body mono">Reformatted the tables, left the words.</p></div>
+        <div class="panel"><span class="tag">Reading 4</span><p class="body mono">Deleted the section it judged weakest.</p></div>
+      </div>
+      <p class="kicker">It didn't misunderstand you. It understood you four ways — and picked one.</p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide" data-note="No transformers, no neural nets, no maths. One sentence is genuinely enough: it predicts the next chunk of text, then does it again. Everything impressive it does is that loop, run fast, at scale.">
+    <div class="inner">
+      <p class="eyebrow">What is actually happening in there</p>
+      <h2>It predicts the next<br>chunk of text.<br>Then it does that again.</h2>
+      <p class="say">That's the whole trick. There is no plan, no draft, no moment where it decides what the finished answer will be. Each piece is chosen with only the pieces before it for company.</p>
+      <p class="kicker">Autocomplete that went to university.</p>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide" data-demo="tokens" data-note="Click through it. Narrate the ranked list: these are all the words it considered, with the odds it gave each one. Stop hard at step 3 — 34 versus 31 — and say 'hold that number, we come back to it'. Then Play all.">
+    <div class="inner">
+      <p class="eyebrow">Watch it think · one chunk at a time</p>
+      <div class="prompt"><span class="who">You</span>Can you clean up the report?</div>
+      <div class="stream" id="stream"><span class="placeholder">press Predict next…</span><span class="caret"></span></div>
+      <div class="board" id="board"></div>
+      <p class="caption">Illustrative figures. A real model ranks its entire vocabulary — tens of thousands of options — at every step; these are the top four.</p>
+      <p class="flag" id="flag"></p>
+      <div class="controls">
+        <button id="step">Predict next →</button>
+        <button id="play">Play all</button>
+        <button id="reset">Reset</button>
+        <span class="hint" id="stepcount">chunk 0 of 9</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide" data-note="Quick honesty beat, twenty seconds. The chunks are not words — they are fragments, averaging about three quarters of a word. Do not over-explain; it just stops the 'it predicts the next word' claim from being a lie.">
+    <div class="inner">
+      <p class="eyebrow">A small correction</p>
+      <h2>They aren't words.<br>They're bites.</h2>
+      <div class="tokline">
+        <div class="word"><span class="label">unclear</span><span class="chips"><span class="chip">un</span><span class="chip">clear</span></span></div>
+        <div class="word"><span class="label">clarification</span><span class="chips"><span class="chip">clar</span><span class="chip">ific</span><span class="chip">ation</span></span></div>
+        <div class="word"><span class="label">Ask if unclear</span><span class="chips"><span class="chip">Ask</span><span class="chip"> if</span><span class="chip"> un</span><span class="chip">clear</span></span></div>
+      </div>
+      <p class="say">The pieces are called <strong>tokens</strong> — roughly three quarters of a word each. It reads and writes in bites, not words. Nothing else about the argument changes.</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide" data-note="Callback to 34/31. This is the load-bearing slide. Two near-identical odds, two completely different deliverables. And once it takes the left path, every later chunk is predicted from that path — so it does not drift back. It builds a case for the coin it flipped. If anyone presses: most near-ties at this level are just wording, synonym versus synonym. This one is chosen because the fork genuinely changes what lands on your desk.">
+    <div class="inner">
+      <p class="eyebrow">Remember 34 vs 31</p>
+      <h2>A near-tie inside the machine is a coin flip on your desk.</h2>
+      <svg class="fork" viewBox="0 0 720 210" role="img" aria-label="A single path forking into two that diverge: tightened leads to a lightly edited report, shortened leads to a report at half length.">
+        <path d="M20 105 H210" stroke="var(--line)" stroke-width="2" fill="none"/>
+        <path d="M210 105 C 300 105, 300 45, 400 45 H690" stroke="var(--amber)" stroke-width="2.5" fill="none"/>
+        <path d="M210 105 C 300 105, 300 165, 400 165 H690" stroke="var(--teal)" stroke-width="2.5" fill="none" stroke-dasharray="5 4"/>
+        <circle cx="210" cy="105" r="5" fill="var(--amber)"/>
+        <text x="20" y="92">…I've</text>
+        <text class="pick" x="404" y="34">tightened · 34%</text>
+        <text class="pick" x="404" y="70" opacity=".75">→ same report, lightly edited</text>
+        <text class="rival" x="404" y="154">shortened · 31%</text>
+        <text class="rival" x="404" y="190" opacity=".75">→ half the report is gone</text>
+      </svg>
+      <p class="kicker">It doesn't hedge. It commits — and then every chunk after that defends the choice.</p>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide" data-note="The insight to leave them with. A 34/31 split and a 99/1 split produce the identical artefact: one fluent, confident answer. There is no wobble in the output to warn you. Confidence in the text is not confidence in your intent.">
+    <div class="inner">
+      <p class="eyebrow">Why it never just says "I'm not sure"</p>
+      <h2>Ambiguity doesn't feel like anything to a predictor.</h2>
+      <div class="grid2">
+        <div class="panel"><span class="tag">99 / 1 split</span><p class="body mono">One confident sentence.</p></div>
+        <div class="panel"><span class="tag">34 / 31 split</span><p class="body mono">One confident sentence.</p></div>
+      </div>
+      <p class="say">Same fluency, same tone, same certainty. The doubt exists for a fraction of a second inside the numbers and then it is gone — spent, not reported. <strong>A fluent answer to the wrong question looks exactly like a fluent answer to the right one.</strong></p>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide" data-demo="toggle" data-note="Flip the switch both ways. Off: a confident, well-written, useless thing. On: twelve seconds of questions. Ask the room which one they would rather receive at 4:55 on a Friday.">
+    <div class="inner">
+      <p class="eyebrow">Same prompt · one difference</p>
+      <div class="prompt"><span class="who">You</span>Write a summary of Q3 for the board.<span id="suffix" class="mono" style="color:var(--amber)"></span></div>
+      <div class="switch">
+        <button id="flip">Toggle "ask if unclear"</button>
+        <span class="state" id="switchstate">currently: off</span>
+      </div>
+      <div class="out" id="outbox"></div>
+      <p class="cost" id="costline">Cost of the guess: <b>40 minutes</b> of rework, and you find out on Thursday.</p>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide" data-note="The honest mechanism, and the one that survives a skeptic. It is not detecting confusion and reporting it — there is no gauge. It is obeying an instruction, because obeying explicit instructions is the thing it was trained hardest to do. Second, asking is normally suppressed: in this slot, producing the goods is what gets rewarded. You are lifting a brake, not installing a gauge. End on the caveat — it recognises 'unclear' by pattern, so it is useful, not reliable. That is exactly why the next slide is about when to bother.">
+    <div class="inner">
+      <p class="eyebrow">Why three words move the needle</p>
+      <h2>It's an instruction. And this thing is built to follow instructions.</h2>
+      <p class="say">It isn't detecting confusion and deciding to report it. It's doing as it's told — and two separate forces make that land hard.</p>
+      <div class="grid2">
+        <div class="panel">
+          <span class="tag">Trained to comply</span>
+          <p class="body">Following an explicit instruction is the behaviour it was trained hardest to produce. Those three words spend that.</p>
+        </div>
+        <div class="panel">
+          <span class="tag">Otherwise suppressed</span>
+          <p class="body">Right after a request, producing the goods is what gets rewarded — asking is rare. The instruction lifts that brake.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <span class="tag">The net effect · illustrative, not measured</span>
+        <div class="grid2" style="margin-top:.5rem">
+          <div class="oddscol">
+            <span class="oddslabel">your prompt</span>
+            <div class="board" id="oddsbefore"></div>
+          </div>
+          <div class="oddscol">
+            <span class="oddslabel">+ ask if unclear</span>
+            <div class="board" id="oddsafter"></div>
+          </div>
+        </div>
+      </div>
+      <p class="kicker">It spots "unclear" by pattern, not by reading its own numbers. Useful — not reliable.</p>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide" data-note="Keep this brisk. The rule of thumb: if it is expensive to redo, or you used a vague adjective, spend the twelve seconds. If you are looking something up, do not bother — nobody needs to be interrogated about a date conversion.">
+    <div class="inner">
+      <p class="eyebrow">When to spend the twelve seconds</p>
+      <div class="grid2">
+        <div class="panel">
+          <span class="tag">Worth it</span>
+          <ul class="plain yes">
+            <li>Anything with a deliverable at the end</li>
+            <li>Anything expensive or slow to redo</li>
+            <li>Multi-step work that builds on step one</li>
+            <li>Whenever you used a vague adjective: <span class="mono">better, cleaner, modern, tighter</span></li>
+          </ul>
+        </div>
+        <div class="panel">
+          <span class="tag">Skip it</span>
+          <ul class="plain no">
+            <li>Quick lookups and conversions</li>
+            <li>Throwaway drafts you'll rewrite anyway</li>
+            <li>When any reasonable reading is fine by you</li>
+          </ul>
+        </div>
+      </div>
+      <p class="kicker">Rule of thumb: the more it costs to be wrong, the more the question is worth.</p>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="slide" data-note="Land the close. Read the copy block, pause, then the last line — the brief for this deck genuinely ended with those three words, so I asked four questions: format, audience, length, interactivity. That is why the deck fits the room. Then stop talking.">
+    <div class="inner">
+      <p class="eyebrow">Steal this</p>
+      <p class="copyblock">Ask if unclear.</p>
+      <p class="say">Paste it at the end of any request that matters. It costs you one line and it buys you the question the machine would otherwise have answered on your behalf.</p>
+    </div>
+  </section>
+
+</div>
+
+<div class="chrome">
+  <div class="ticks" id="ticks"></div>
+  <div class="counter">click or <kbd>→</kbd>to advance<span style="margin-left:1rem"><kbd>?</kbd>notes</span><span id="counter" style="margin-left:1rem"></span></div>
+</div>
+
+<div class="notes" id="notes"><b>Speaker notes</b><span id="notestext"></span></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------------- deck navigation ---------------- */
+  var slides  = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var ticks   = document.getElementById("ticks");
+  var counter = document.getElementById("counter");
+  var notes   = document.getElementById("notes");
+  var notesText = document.getElementById("notestext");
+  var current = -1;   /* no slide shown yet, so the first go() counts as a change */
+
+  slides.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", "Go to slide " + (i + 1));
+    b.addEventListener("click", function () { go(i); });
+    ticks.appendChild(b);
+  });
+  var tickButtons = Array.prototype.slice.call(ticks.children);
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+
+  /* Analytics. The deck is one page, so a plain pageview says nothing about how far
+     anyone gets — send a slide_view instead. gtag may be missing entirely if the tag
+     is blocked; the deck has to keep working in front of a room either way. */
+  function trackSlide(i) {
+    if (typeof gtag !== "function") return;
+    var head = slides[i].querySelector("h1, h2") || slides[i].querySelector(".eyebrow");
+    var title = "";
+    if (head) {
+      /* headings break across lines with <br>, which textContent drops entirely —
+         "Ask If<br>Unclear" would read "Ask IfUnclear" in the report */
+      var flat = head.cloneNode(true);
+      Array.prototype.forEach.call(flat.querySelectorAll("br"), function (br) {
+        br.parentNode.replaceChild(document.createTextNode(" "), br);
+      });
+      title = flat.textContent.replace(/\s+/g, " ").trim().slice(0, 100);
+    }
+    gtag("event", "slide_view", { slide_number: i + 1, slide_title: title });
+  }
+
+  function go(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    var changed = i !== current;
+    current = i;
+    slides.forEach(function (s, n) { s.classList.toggle("is-active", n === i); });
+    tickButtons.forEach(function (b, n) { b.setAttribute("aria-current", n === i ? "true" : "false"); });
+    counter.textContent = pad(i + 1) + " / " + pad(slides.length);
+    notesText.textContent = slides[i].getAttribute("data-note") || "";
+    if (history.replaceState) history.replaceState(null, "", "#" + (i + 1));
+    if (slides[i].getAttribute("data-demo") === "tokens") resetTokens();
+    if (changed) trackSlide(i);
+  }
+
+  /* Click to advance. The deck is usually embedded in an iframe that does not hold
+     keyboard focus, so pointer navigation has to work on its own — and any click
+     also pulls focus back here so the arrow keys start working. */
+  document.addEventListener("pointerdown", function () {
+    try { window.focus(); } catch (err) { /* cross-origin parent; keys stay with host */ }
+  });
+
+  document.querySelector(".deck").addEventListener("click", function (e) {
+    // never hijack a real control, a link, or a text selection
+    if (e.target.closest("button, a, input, textarea, select")) return;
+    // the live demo areas: a stray click here should not jump the slide mid-point
+    if (e.target.closest(".stream, .board, .out, .controls")) return;
+    if (String(window.getSelection())) return;
+    if (e.clientX < window.innerWidth * 0.25) go(current - 1);
+    else go(current + 1);
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var tag = (e.target.tagName || "").toLowerCase();
+    if (tag === "input" || tag === "textarea") return;
+    if (e.key === "ArrowRight" || e.key === "PageDown") { go(current + 1); e.preventDefault(); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { go(current - 1); e.preventDefault(); }
+    else if (e.key === " ") {
+      // space advances the deck unless a control has focus
+      if (tag !== "button") { go(current + 1); e.preventDefault(); }
+    }
+    else if (e.key === "Home") { go(0); e.preventDefault(); }
+    else if (e.key === "End") { go(slides.length - 1); e.preventDefault(); }
+    else if (e.key === "?" || e.key === "/") { notes.classList.toggle("is-open"); e.preventDefault(); }
+    else if (e.key === "Escape") { notes.classList.remove("is-open"); }
+  });
+
+  /* ---------------- shared: render a ranked odds board ---------------- */
+  function renderBoard(el, cands, opts) {
+    opts = opts || {};
+    el.textContent = "";
+    cands.forEach(function (c, idx) {
+      var row = document.createElement("div");
+      row.className = "row"
+        + (idx === 0 && opts.markPick !== false ? " is-pick" : "")
+        + (c.rival ? " is-rival" : "");
+
+      var tok = document.createElement("span");
+      tok.className = "tok";
+      tok.textContent = c.t.replace(/ /g, "·");
+
+      var track = document.createElement("span");
+      track.className = "track";
+      var fill = document.createElement("span");
+      fill.className = "fill";
+      track.appendChild(fill);
+
+      var pct = document.createElement("span");
+      pct.className = "pct";
+      pct.textContent = c.p + "%";
+
+      row.appendChild(tok); row.appendChild(track); row.appendChild(pct);
+      el.appendChild(row);
+      // bars are the literal probability — no scaling, or the slide lies about its own subject
+      fill.style.width = c.p + "%";
+    });
+  }
+
+  /* ---------------- slide 4: next-token demo ---------------- */
+  var SCRIPT = [
+    { c: [{t:"I",p:62},{t:"Sure",p:21},{t:"Here",p:11},{t:"Of",p:6}] },
+    { c: [{t:"'ve",p:48},{t:" can",p:30},{t:" will",p:14},{t:" have",p:8}] },
+    { c: [{t:" tightened",p:34},{t:" shortened",p:31,rival:true},{t:" fixed",p:21},{t:" reformatted",p:14}],
+      flag: "34 vs 31. Two different jobs. It does not stop to ask — it takes the 34." },
+    { c: [{t:" the",p:76},{t:" your",p:12},{t:" up",p:8},{t:" it",p:4}] },
+    { c: [{t:" wording",p:39},{t:" whole",p:24},{t:" draft",p:22},{t:" report",p:15}] },
+    { c: [{t:" and",p:41},{t:".",p:33},{t:" throughout",p:15},{t:" a",p:11}] },
+    { c: [{t:" cut",p:44},{t:" removed",p:29},{t:" merged",p:16},{t:" tidied",p:11}] },
+    { c: [{t:" two",p:37},{t:" the",p:31},{t:" a",p:19},{t:" three",p:13}] },
+    { c: [{t:" sections.",p:58},{t:" paragraphs.",p:24},{t:" pages.",p:12},{t:" tables.",p:6}] }
+  ];
+
+  var stream    = document.getElementById("stream");
+  var board     = document.getElementById("board");
+  var flag      = document.getElementById("flag");
+  var stepBtn   = document.getElementById("step");
+  var playBtn   = document.getElementById("play");
+  var resetBtn  = document.getElementById("reset");
+  var stepCount = document.getElementById("stepcount");
+  var at = 0, timer = null;
+
+  function paintStream() {
+    stream.textContent = "";
+    if (at === 0) {
+      var ph = document.createElement("span");
+      ph.className = "placeholder";
+      ph.textContent = "press Predict next…";
+      stream.appendChild(ph);
+    } else {
+      for (var i = 0; i < at; i++) {
+        var s = document.createElement("span");
+        if (i === at - 1) s.className = "new";
+        s.textContent = SCRIPT[i].c[0].t;
+        stream.appendChild(s);
+      }
+    }
+    var caret = document.createElement("span");
+    caret.className = "caret";
+    stream.appendChild(caret);
+  }
+
+  function stepTokens() {
+    if (at >= SCRIPT.length) return;
+    var s = SCRIPT[at];
+    at += 1;
+    renderBoard(board, s.c);
+    paintStream();
+    flag.textContent = s.flag || "";
+    stepCount.textContent = "chunk " + at + " of " + SCRIPT.length;
+    if (at >= SCRIPT.length) {
+      stepBtn.disabled = true;
+      playBtn.disabled = true;
+      flag.textContent = "Nine coin flips later, you have a deliverable nobody sanity-checked.";
+    }
+  }
+
+  function resetTokens() {
+    if (timer) { clearInterval(timer); timer = null; }
+    at = 0;
+    board.textContent = "";
+    flag.textContent = "";
+    stepBtn.disabled = false;
+    playBtn.disabled = false;
+    stepCount.textContent = "chunk 0 of " + SCRIPT.length;
+    paintStream();
+  }
+
+  stepBtn.addEventListener("click", stepTokens);
+  resetBtn.addEventListener("click", resetTokens);
+  playBtn.addEventListener("click", function () {
+    if (timer) return;
+    timer = setInterval(function () {
+      stepTokens();
+      if (at >= SCRIPT.length) { clearInterval(timer); timer = null; }
+    }, 650);
+  });
+
+  /* ---------------- slide 9: the odds, before and after ---------------- */
+  renderBoard(document.getElementById("oddsbefore"), [
+    { t: "an answer", p: 91 },
+    { t: "a question", p: 4, rival: true }
+  ]);
+  renderBoard(document.getElementById("oddsafter"), [
+    { t: "a question", p: 63, rival: true },
+    { t: "an answer", p: 34 }
+  ], { markPick: false });
+
+  /* ---------------- slide 8: before / after ---------------- */
+  var OFF = "Q3 was a period of continued momentum for the\nbusiness. Building on the foundations laid earlier\nin the year, teams across the organisation drove\nmeaningful progress against our strategic\npriorities, while navigating a dynamic external\nenvironment…\n\n[900 words. Three numbers. No recommendation.]";
+
+  var ON = "Two quick questions before I start:\n\n  1. One page for the pre-read, or a full deck?\n  2. Numbers first, or the narrative first?\n\n→ You: one page, numbers first.\n\nQ3 revenue £4.2m (+11% QoQ). Churn 2.1%,\ndown from 3.4%. One decision needed: renew\nthe Leeds lease or exit in November.";
+
+  var flip     = document.getElementById("flip");
+  var outbox   = document.getElementById("outbox");
+  var stateEl  = document.getElementById("switchstate");
+  var suffix   = document.getElementById("suffix");
+  var costline = document.getElementById("costline");
+  var on = false;
+
+  function paintToggle() {
+    outbox.textContent = on ? ON : OFF;
+    outbox.classList.toggle("good", on);
+    stateEl.textContent = on ? "currently: on" : "currently: off";
+    stateEl.classList.toggle("on", on);
+    suffix.textContent = on ? " Ask if unclear." : "";
+    costline.innerHTML = on
+      ? "Cost of the question: <b>12 seconds</b>, and it's right the first time."
+      : "Cost of the guess: <b>40 minutes</b> of rework, and you find out on Thursday.";
+  }
+  flip.addEventListener("click", function () { on = !on; paintToggle(); });
+  paintToggle();
+
+  /* ---------------- boot ---------------- */
+  function slideFromHash() {
+    var n = parseInt((location.hash || "").replace("#", ""), 10);
+    return isNaN(n) ? 0 : n - 1;
+  }
+  window.addEventListener("hashchange", function () {
+    var target = slideFromHash();
+    if (target !== current) go(target);
+  });
+  go(slideFromHash());
+})();
+</script>
+
+</body>
+</html>
