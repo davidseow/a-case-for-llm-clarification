@@ -506,15 +506,15 @@
   </section>
 
   <!-- 2 -->
-  <section class="slide" data-note="Read the prompt out loud, then the four outputs. Every one of these is a defensible reading of 'clean up'. Land the punchline slowly — the failure was not comprehension.">
+  <section class="slide" data-note="Read the prompt out loud, then the four outputs. Every one of these is a defensible reading of 'plan dinner'. Land the punchline slowly — the failure was not comprehension.">
     <div class="inner">
       <p class="eyebrow">The thing that keeps happening</p>
-      <div class="prompt"><span class="who">You</span>Can you clean up the report?</div>
+      <div class="prompt"><span class="who">You</span>Can you plan dinner for Saturday?</div>
       <div class="grid2">
-        <div class="panel"><span class="tag">Reading 1</span><p class="body mono">Fixed the typos. Changed nothing else.</p></div>
-        <div class="panel"><span class="tag">Reading 2</span><p class="body mono">Rewrote it at half the length.</p></div>
-        <div class="panel"><span class="tag">Reading 3</span><p class="body mono">Reformatted the tables, left the words.</p></div>
-        <div class="panel"><span class="tag">Reading 4</span><p class="body mono">Deleted the section it judged weakest.</p></div>
+        <div class="panel"><span class="tag">Reading 1</span><p class="body mono">Gave a recipe for six.</p></div>
+        <div class="panel"><span class="tag">Reading 2</span><p class="body mono">Wrote the shopping list.</p></div>
+        <div class="panel"><span class="tag">Reading 3</span><p class="body mono">Suggested a restaurant.</p></div>
+        <div class="panel"><span class="tag">Reading 4</span><p class="body mono">Planned three courses.</p></div>
       </div>
       <p class="kicker">It didn't misunderstand you. It understood you four ways — and picked one.</p>
     </div>
@@ -534,7 +534,7 @@
   <section class="slide" data-demo="tokens" data-note="Click through it. Narrate the ranked list: these are all the words it considered, with the odds it gave each one. Stop hard at step 3 — 34 versus 31 — and say 'hold that number, we come back to it'. Then Play all.">
     <div class="inner">
       <p class="eyebrow">Watch it think · one chunk at a time</p>
-      <div class="prompt"><span class="who">You</span>Can you clean up the report?</div>
+      <div class="prompt"><span class="who">You</span>Can you plan dinner for Saturday?</div>
       <div class="stream" id="stream"><span class="placeholder">press Predict next…</span><span class="caret"></span></div>
       <div class="board" id="board"></div>
       <p class="caption">Illustrative figures. A real model ranks its entire vocabulary — tens of thousands of options — at every step; these are the top four.</p>
@@ -563,20 +563,20 @@
   </section>
 
   <!-- 6 -->
-  <section class="slide" data-note="Callback to 34/31. This is the load-bearing slide. Two near-identical odds, two completely different deliverables. And once it takes the left path, every later chunk is predicted from that path — so it does not drift back. It builds a case for the coin it flipped. If anyone presses: most near-ties at this level are just wording, synonym versus synonym. This one is chosen because the fork genuinely changes what lands on your desk.">
+  <section class="slide" data-note="Callback to 34/31. This is the load-bearing slide. Two near-identical odds, two completely different Saturdays. And once it takes the left path, every later chunk is predicted from that path — so it does not drift back. It builds a case for the coin it flipped. If anyone presses: most near-ties at this level are just wording, synonym versus synonym. This one is chosen because the fork genuinely changes what you end up doing on the night.">
     <div class="inner">
       <p class="eyebrow">Remember 34 vs 31</p>
-      <h2>A near-tie inside the machine is a coin flip on your desk.</h2>
-      <svg class="fork" viewBox="0 0 720 210" role="img" aria-label="A single path forking into two that diverge: tightened leads to a lightly edited report, shortened leads to a report at half length.">
+      <h2>A near-tie inside the machine is a coin flip on your Saturday.</h2>
+      <svg class="fork" viewBox="0 0 720 210" role="img" aria-label="A single path forking into two that diverge: picked leads to a menu you cook on Saturday, booked leads to a restaurant table where nobody cooks.">
         <path d="M20 105 H210" stroke="var(--line)" stroke-width="2" fill="none"/>
         <path d="M210 105 C 300 105, 300 45, 400 45 H690" stroke="var(--amber)" stroke-width="2.5" fill="none"/>
         <path d="M210 105 C 300 105, 300 165, 400 165 H690" stroke="var(--teal)" stroke-width="2.5" fill="none" stroke-dasharray="5 4"/>
         <circle cx="210" cy="105" r="5" fill="var(--amber)"/>
         <text x="20" y="92">…I've</text>
-        <text class="pick" x="404" y="34">tightened · 34%</text>
-        <text class="pick" x="404" y="70" opacity=".75">→ same report, lightly edited</text>
-        <text class="rival" x="404" y="154">shortened · 31%</text>
-        <text class="rival" x="404" y="190" opacity=".75">→ half the report is gone</text>
+        <text class="pick" x="404" y="34">picked · 34%</text>
+        <text class="pick" x="404" y="70" opacity=".75">→ a menu to cook on Saturday</text>
+        <text class="rival" x="404" y="154">booked · 31%</text>
+        <text class="rival" x="404" y="190" opacity=".75">→ a table; nobody cooks</text>
       </svg>
       <p class="kicker">It doesn't hedge. It commits — and then every chunk after that defends the choice.</p>
     </div>
@@ -596,16 +596,16 @@
   </section>
 
   <!-- 8 -->
-  <section class="slide" data-demo="toggle" data-note="Flip the switch both ways. Off: a confident, well-written, useless thing. On: twelve seconds of questions. Ask the room which one they would rather receive at 4:55 on a Friday.">
+  <section class="slide" data-demo="toggle" data-note="Flip the switch both ways. Off: a confident, well-written, useless thing. On: twelve seconds of questions. Ask the room which one they would rather be holding on Thursday night, with the shop still to do.">
     <div class="inner">
       <p class="eyebrow">Same prompt · one difference</p>
-      <div class="prompt"><span class="who">You</span>Write a summary of Q3 for the board.<span id="suffix" class="mono" style="color:var(--amber)"></span></div>
+      <div class="prompt"><span class="who">You</span>Plan dinner for eight on Saturday.<span id="suffix" class="mono" style="color:var(--amber)"></span></div>
       <div class="switch">
         <button id="flip">Toggle "ask if unclear"</button>
         <span class="state" id="switchstate">currently: off</span>
       </div>
       <div class="out" id="outbox"></div>
-      <p class="cost" id="costline">Cost of the guess: <b>40 minutes</b> of rework, and you find out on Thursday.</p>
+      <p class="cost" id="costline">Cost of the guess: <b>a ruined Saturday</b>, and you find out at 7pm.</p>
     </div>
   </section>
 
@@ -810,14 +810,14 @@
   var SCRIPT = [
     { c: [{t:"I",p:62},{t:"Sure",p:21},{t:"Here",p:11},{t:"Of",p:6}] },
     { c: [{t:"'ve",p:48},{t:" can",p:30},{t:" will",p:14},{t:" have",p:8}] },
-    { c: [{t:" tightened",p:34},{t:" shortened",p:31,rival:true},{t:" fixed",p:21},{t:" reformatted",p:14}],
-      flag: "34 vs 31. Two different jobs. It does not stop to ask — it takes the 34." },
-    { c: [{t:" the",p:76},{t:" your",p:12},{t:" up",p:8},{t:" it",p:4}] },
-    { c: [{t:" wording",p:39},{t:" whole",p:24},{t:" draft",p:22},{t:" report",p:15}] },
-    { c: [{t:" and",p:41},{t:".",p:33},{t:" throughout",p:15},{t:" a",p:11}] },
-    { c: [{t:" cut",p:44},{t:" removed",p:29},{t:" merged",p:16},{t:" tidied",p:11}] },
-    { c: [{t:" two",p:37},{t:" the",p:31},{t:" a",p:19},{t:" three",p:13}] },
-    { c: [{t:" sections.",p:58},{t:" paragraphs.",p:24},{t:" pages.",p:12},{t:" tables.",p:6}] }
+    { c: [{t:" picked",p:34},{t:" booked",p:31,rival:true},{t:" planned",p:21},{t:" found",p:14}],
+      flag: "34 vs 31. Two different Saturdays. It does not stop to ask — it takes the 34." },
+    { c: [{t:" a",p:76},{t:" the",p:12},{t:" us",p:8},{t:" you",p:4}] },
+    { c: [{t:" menu",p:39},{t:" simple",p:24},{t:" three",p:22},{t:" main",p:15}] },
+    { c: [{t:" and",p:41},{t:".",p:33},{t:" for",p:15},{t:" that",p:11}] },
+    { c: [{t:" written",p:44},{t:" added",p:29},{t:" built",p:16},{t:" sent",p:11}] },
+    { c: [{t:" the",p:37},{t:" a",p:31},{t:" your",p:19},{t:" out",p:13}] },
+    { c: [{t:" shopping list.",p:58},{t:" full list.",p:24},{t:" recipe.",p:12},{t:" ingredients.",p:6}] }
   ];
 
   var stream    = document.getElementById("stream");
@@ -860,7 +860,7 @@
     if (at >= SCRIPT.length) {
       stepBtn.disabled = true;
       playBtn.disabled = true;
-      flag.textContent = "Nine coin flips later, you have a deliverable nobody sanity-checked.";
+      flag.textContent = "Nine coin flips later, you have a dinner plan nobody sanity-checked.";
     }
   }
 
@@ -896,9 +896,9 @@
   ], { markPick: false });
 
   /* ---------------- slide 8: before / after ---------------- */
-  var OFF = "Q3 was a period of continued momentum for the\nbusiness. Building on the foundations laid earlier\nin the year, teams across the organisation drove\nmeaningful progress against our strategic\npriorities, while navigating a dynamic external\nenvironment…\n\n[900 words. Three numbers. No recommendation.]";
+  var OFF = "A dinner for eight should feel generous without\nkeeping you in the kitchen all evening, so here is\na seasonal menu built around one showpiece dish…\n\n  Starter — seared scallops, brown butter\n  Main    — lamb shoulder, six hours, slow\n  Pudding — tarte tatin, made that morning\n\n[Nine hours of cooking. Two of your guests are vegetarian.]";
 
-  var ON = "Two quick questions before I start:\n\n  1. One page for the pre-read, or a full deck?\n  2. Numbers first, or the narrative first?\n\n→ You: one page, numbers first.\n\nQ3 revenue £4.2m (+11% QoQ). Churn 2.1%,\ndown from 3.4%. One decision needed: renew\nthe Leeds lease or exit in November.";
+  var ON = "Two quick questions before I start:\n\n  1. Cooking at home, or booking somewhere?\n  2. Anyone not eating meat, and what budget?\n\n→ You: cooking at home, two vegetarians, under £60.\n\nBaked ricotta and tomatoes to start. Mushroom\nand barley risotto, big green salad. Shopping\nlist below: £54, 40 minutes of prep.";
 
   var flip     = document.getElementById("flip");
   var outbox   = document.getElementById("outbox");
@@ -915,7 +915,7 @@
     suffix.textContent = on ? " Ask if unclear." : "";
     costline.innerHTML = on
       ? "Cost of the question: <b>12 seconds</b>, and it's right the first time."
-      : "Cost of the guess: <b>40 minutes</b> of rework, and you find out on Thursday.";
+      : "Cost of the guess: <b>a ruined Saturday</b>, and you find out at 7pm.";
   }
   flip.addEventListener("click", function () { on = !on; paintToggle(); });
   paintToggle();
