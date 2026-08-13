@@ -506,15 +506,15 @@
   </section>
 
   <!-- 2 -->
-  <section class="slide" data-note="Read the prompt out loud, then the four outputs. Every one of these is a defensible reading of 'plan dinner'. Land the punchline slowly — the failure was not comprehension.">
+  <section class="slide" data-note="Read the prompt out loud, then the four outputs — flat, no emphasis on the fourth, let the room get there on its own. Every one of these is a defensible reading of 'take care of'. Then land the punchline slowly: the failure was not comprehension.">
     <div class="inner">
       <p class="eyebrow">The thing that keeps happening</p>
-      <div class="prompt"><span class="who">You</span>Can you plan dinner for Saturday?</div>
+      <div class="prompt"><span class="who">You</span>Can you take care of Gary?</div>
       <div class="grid2">
-        <div class="panel"><span class="tag">Reading 1</span><p class="body mono">Gave a recipe for six.</p></div>
-        <div class="panel"><span class="tag">Reading 2</span><p class="body mono">Wrote the shopping list.</p></div>
-        <div class="panel"><span class="tag">Reading 3</span><p class="body mono">Suggested a restaurant.</p></div>
-        <div class="panel"><span class="tag">Reading 4</span><p class="body mono">Planned three courses.</p></div>
+        <div class="panel"><span class="tag">Reading 1</span><p class="body mono">Made him a cup of tea.</p></div>
+        <div class="panel"><span class="tag">Reading 2</span><p class="body mono">Drove him to A&amp;E.</p></div>
+        <div class="panel"><span class="tag">Reading 3</span><p class="body mono">Fed his cat while he's away.</p></div>
+        <div class="panel"><span class="tag">Reading 4</span><p class="body mono">Buried him under the patio.</p></div>
       </div>
       <p class="kicker">It didn't misunderstand you. It understood you four ways — and picked one.</p>
     </div>
@@ -534,7 +534,7 @@
   <section class="slide" data-demo="tokens" data-note="Click through it. Narrate the ranked list: these are all the words it considered, with the odds it gave each one. Stop hard at step 3 — 34 versus 31 — and say 'hold that number, we come back to it'. Then Play all.">
     <div class="inner">
       <p class="eyebrow">Watch it think · one chunk at a time</p>
-      <div class="prompt"><span class="who">You</span>Can you plan dinner for Saturday?</div>
+      <div class="prompt"><span class="who">You</span>Can you take care of Gary?</div>
       <div class="stream" id="stream"><span class="placeholder">press Predict next…</span><span class="caret"></span></div>
       <div class="board" id="board"></div>
       <p class="caption">Illustrative figures. A real model ranks its entire vocabulary — tens of thousands of options — at every step; these are the top four.</p>
@@ -563,20 +563,20 @@
   </section>
 
   <!-- 6 -->
-  <section class="slide" data-note="Callback to 34/31. This is the load-bearing slide. Two near-identical odds, two completely different Saturdays. And once it takes the left path, every later chunk is predicted from that path — so it does not drift back. It builds a case for the coin it flipped. If anyone presses: most near-ties at this level are just wording, synonym versus synonym. This one is chosen because the fork genuinely changes what you end up doing on the night.">
+  <section class="slide" data-note="Callback to 34/31. This is the load-bearing slide. Two near-identical odds, two completely different outcomes for Gary. And once it takes the top path, every later chunk is predicted from that path — so it does not drift back. It builds a case for the coin it flipped. If anyone presses: most near-ties at this level are just wording, synonym versus synonym. This one is chosen because the fork genuinely changes what happens to a man.">
     <div class="inner">
       <p class="eyebrow">Remember 34 vs 31</p>
-      <h2>A near-tie inside the machine is a coin flip on your Saturday.</h2>
-      <svg class="fork" viewBox="0 0 720 210" role="img" aria-label="A single path forking into two that diverge: picked leads to a menu you cook on Saturday, booked leads to a restaurant table where nobody cooks.">
+      <h2>A near-tie inside the machine is a coin flip on Gary.</h2>
+      <svg class="fork" viewBox="0 0 720 210" role="img" aria-label="A single path forking into two that diverge: looked after leads to Gary getting a cup of tea, disposed of leads to Gary under the patio.">
         <path d="M20 105 H210" stroke="var(--line)" stroke-width="2" fill="none"/>
         <path d="M210 105 C 300 105, 300 45, 400 45 H690" stroke="var(--amber)" stroke-width="2.5" fill="none"/>
         <path d="M210 105 C 300 105, 300 165, 400 165 H690" stroke="var(--teal)" stroke-width="2.5" fill="none" stroke-dasharray="5 4"/>
         <circle cx="210" cy="105" r="5" fill="var(--amber)"/>
         <text x="20" y="92">…I've</text>
-        <text class="pick" x="404" y="34">picked · 34%</text>
-        <text class="pick" x="404" y="70" opacity=".75">→ a menu to cook on Saturday</text>
-        <text class="rival" x="404" y="154">booked · 31%</text>
-        <text class="rival" x="404" y="190" opacity=".75">→ a table; nobody cooks</text>
+        <text class="pick" x="404" y="34">looked after · 34%</text>
+        <text class="pick" x="404" y="70" opacity=".75">→ Gary gets a cup of tea</text>
+        <text class="rival" x="404" y="154">disposed of · 31%</text>
+        <text class="rival" x="404" y="190" opacity=".75">→ Gary is under the patio</text>
       </svg>
       <p class="kicker">It doesn't hedge. It commits — and then every chunk after that defends the choice.</p>
     </div>
@@ -810,14 +810,14 @@
   var SCRIPT = [
     { c: [{t:"I",p:62},{t:"Sure",p:21},{t:"Here",p:11},{t:"Of",p:6}] },
     { c: [{t:"'ve",p:48},{t:" can",p:30},{t:" will",p:14},{t:" have",p:8}] },
-    { c: [{t:" picked",p:34},{t:" booked",p:31,rival:true},{t:" planned",p:21},{t:" found",p:14}],
-      flag: "34 vs 31. Two different Saturdays. It does not stop to ask — it takes the 34." },
-    { c: [{t:" a",p:76},{t:" the",p:12},{t:" us",p:8},{t:" you",p:4}] },
-    { c: [{t:" menu",p:39},{t:" simple",p:24},{t:" three",p:22},{t:" main",p:15}] },
-    { c: [{t:" and",p:41},{t:".",p:33},{t:" for",p:15},{t:" that",p:11}] },
-    { c: [{t:" written",p:44},{t:" added",p:29},{t:" built",p:16},{t:" sent",p:11}] },
-    { c: [{t:" the",p:37},{t:" a",p:31},{t:" your",p:19},{t:" out",p:13}] },
-    { c: [{t:" shopping list.",p:58},{t:" full list.",p:24},{t:" recipe.",p:12},{t:" ingredients.",p:6}] }
+    { c: [{t:" looked",p:34},{t:" disposed",p:31,rival:true},{t:" taken",p:21},{t:" sorted",p:14}],
+      flag: "34 vs 31. Two very different outcomes for Gary. It does not stop to ask — it takes the 34." },
+    { c: [{t:" after",p:81},{t:" at",p:9},{t:" into",p:6},{t:" round",p:4}] },
+    { c: [{t:" him",p:68},{t:" Gary",p:19},{t:" the",p:9},{t:" them",p:4}] },
+    { c: [{t:" and",p:41},{t:".",p:33},{t:" for",p:15},{t:" all",p:11}] },
+    { c: [{t:" put",p:44},{t:" made",p:29},{t:" left",p:16},{t:" got",p:11}] },
+    { c: [{t:" the",p:52},{t:" him",p:24},{t:" a",p:14},{t:" it",p:10}] },
+    { c: [{t:" kettle on.",p:57},{t:" spare room.",p:22},{t:" bins out.",p:13},{t:" lights off.",p:8}] }
   ];
 
   var stream    = document.getElementById("stream");
@@ -860,7 +860,7 @@
     if (at >= SCRIPT.length) {
       stepBtn.disabled = true;
       playBtn.disabled = true;
-      flag.textContent = "Nine coin flips later, you have a dinner plan nobody sanity-checked.";
+      flag.textContent = "Nine coin flips later, Gary's evening was settled by a three-point gap.";
     }
   }
 
