@@ -596,16 +596,16 @@
   </section>
 
   <!-- 8 -->
-  <section class="slide" data-demo="toggle" data-note="Flip the switch both ways. Off: a confident, well-written, useless thing. On: twelve seconds of questions. Ask the room which one they would rather be holding on Thursday night, with the shop still to do.">
+  <section class="slide" data-demo="toggle" data-note="Off first, then say nothing — let them read it. The laugh is in the third bullet, not in your delivery. Point out that it is fluent, confident and well organised: exactly what slide 7 promised. Then flip it. Twelve seconds of questions. Ask the room which version of Tuesday they would rather have.">
     <div class="inner">
       <p class="eyebrow">Same prompt · one difference</p>
-      <div class="prompt"><span class="who">You</span>Plan dinner for eight on Saturday.<span id="suffix" class="mono" style="color:var(--amber)"></span></div>
+      <div class="prompt"><span class="who">You</span>Take care of Gary while I'm at my mother's.<span id="suffix" class="mono" style="color:var(--amber)"></span></div>
       <div class="switch">
         <button id="flip">Toggle "ask if unclear"</button>
         <span class="state" id="switchstate">currently: off</span>
       </div>
       <div class="out" id="outbox"></div>
-      <p class="cost" id="costline">Cost of the guess: <b>a ruined Saturday</b>, and you find out at 7pm.</p>
+      <p class="cost" id="costline">Cost of the guess: <b>15 to 20 years</b>, and you find out on Tuesday.</p>
     </div>
   </section>
 
@@ -896,9 +896,9 @@
   ], { markPick: false });
 
   /* ---------------- slide 8: before / after ---------------- */
-  var OFF = "A dinner for eight should feel generous without\nkeeping you in the kitchen all evening, so here is\na seasonal menu built around one showpiece dish…\n\n  Starter — seared scallops, brown butter\n  Main    — lamb shoulder, six hours, slow\n  Pudding — tarte tatin, made that morning\n\n[Nine hours of cooking. Two of your guests are vegetarian.]";
+  var OFF = "Gary has been taken care of. I kept it discreet\nand tidied up afterwards, so there's nothing for\nyou to worry about when you get back.\n\n  · The patio has been relaid.\n  · His phone is in the canal.\n  · The cat has been rehomed.\n\n[You meant: the spare room, until Tuesday.]";
 
-  var ON = "Two quick questions before I start:\n\n  1. Cooking at home, or booking somewhere?\n  2. Anyone not eating meat, and what budget?\n\n→ You: cooking at home, two vegetarians, under £60.\n\nBaked ricotta and tomatoes to start. Mushroom\nand barley risotto, big green salad. Shopping\nlist below: £54, 40 minutes of prep.";
+  var ON = "Two quick questions before I start:\n\n  1. 'Take care of' — look after, or the other one?\n  2. Is he staying over, or just popping in?\n\n→ You: look after. Spare room till Tuesday.\n\nGary is fed, watered and watching the snooker.\nThe cat has been in twice. The patio is exactly\nas you left it.";
 
   var flip     = document.getElementById("flip");
   var outbox   = document.getElementById("outbox");
@@ -914,8 +914,8 @@
     stateEl.classList.toggle("on", on);
     suffix.textContent = on ? " Ask if unclear." : "";
     costline.innerHTML = on
-      ? "Cost of the question: <b>12 seconds</b>, and it's right the first time."
-      : "Cost of the guess: <b>a ruined Saturday</b>, and you find out at 7pm.";
+      ? "Cost of the question: <b>12 seconds</b>, and Gary is fine."
+      : "Cost of the guess: <b>15 to 20 years</b>, and you find out on Tuesday.";
   }
   flip.addEventListener("click", function () { on = !on; paintToggle(); });
   paintToggle();
