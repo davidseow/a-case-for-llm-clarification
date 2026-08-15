@@ -17,7 +17,10 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-5ZTERDQNWV');
+  // The deck is one page with eleven slides behind #1…#11. The automatic pageview
+  // would report all eleven as a single page, so it is off — the deck sends one
+  // virtual page_view per slide instead (see trackSlide below).
+  gtag('config', 'G-5ZTERDQNWV', { send_page_view: false });
 </script>
 
 <style>
@@ -711,8 +714,9 @@
   function pad(n) { return (n < 10 ? "0" : "") + n; }
 
   /* Analytics. The deck is one page, so a plain pageview says nothing about how far
-     anyone gets — send a slide_view instead. gtag may be missing entirely if the tag
-     is blocked; the deck has to keep working in front of a room either way. */
+     anyone gets — each slide is reported as its own page instead, plus a slide_view
+     event carrying the raw number. gtag may be missing entirely if the tag is
+     blocked; the deck has to keep working in front of a room either way. */
   function trackSlide(i) {
     if (typeof gtag !== "function") return;
     var head = slides[i].querySelector("h1, h2") || slides[i].querySelector(".eyebrow");
@@ -726,6 +730,18 @@
       });
       title = flat.textContent.replace(/\s+/g, " ").trim().slice(0, 100);
     }
+
+    /* Built from i, not from location.hash — go() sets the hash just before calling
+       this, and deriving both from the same number means they cannot disagree.
+       The number is zero-padded into the title because GA4 sorts these as text:
+       unpadded, slide 10 would sort above slide 2. */
+    var path = location.pathname + "#" + (i + 1);
+    gtag("event", "page_view", {
+      page_location: location.origin + path,
+      page_path: path,
+      page_title: pad(i + 1) + (title ? " · " + title : "")
+    });
+
     gtag("event", "slide_view", { slide_number: i + 1, slide_title: title });
   }
 
